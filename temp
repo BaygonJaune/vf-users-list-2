@@ -1,0 +1,145 @@
+
+
+if(!class_exists('VF2_Users_List')){
+	class VF2_Users_List{
+
+	public function __construct(){
+		// register actions
+
+//		add_menu_page(
+//						__('Persons', 'vf_users_list'),   // page title
+//						__('Persons', 'vf_users_list'),   // menu title
+//						'activate_plugins',				   // capability
+//						'persons',    						//menu_lug 
+//						array(&$this, 'list_page')
+//		);
+
+//		add_submenu_page('persons', __('Persons', 'vf_users_list'), __('Persons', 'vf_users_list'), 'activate_plugins', 'persons', 'vf_users_list_persons_page_handler');
+		// add new will be described in next part
+//		add_submenu_page('persons', __('Add new', 'vf_users_list'), __('Add new', 'vf_users_list'), 'activate_plugins', 'persons_form', 'vf_users_list_persons_form_page_handler');
+
+
+
+//		add_action('admin_init', array(&$this, 'admin_init'));
+//		add_action('admin_menu', array(&$this, 'add_menu'));
+
+//		add_filter('manage_users_columns',array(&$this,'add_user_group_column'));
+//		add_filter('manage_users_custom_column',array(&$this,'add_user_group_column_content'),10,3);
+	}
+
+
+	function add_menu {
+/*
+		add_menu_page(
+						__('Persons', 'vf_users_list'),   // page title
+						__('Persons', 'vf_users_list'),   // menu title
+						'activate_plugins',				   // capability
+						'persons',    						//menu_lug 
+						array(&$this, 'list_page')
+		);
+*/		
+//		add_menu_page( __('Persons', 'vf_users_list'), __('Persons', 'vf_users_list'), 'manage_options', 'persons', array(&$this,'list_page' ));
+
+	}
+
+	function list_page()
+		{
+			global $wpdb;
+
+			$group = (isset($_REQUEST['group']) && $_REQUEST['group'] >=0) ? $_REQUEST['group'] : false ;
+
+			$table = new VF_Users_List_Table();
+			$table->prepare_items();
+
+			$message = '';
+			$message = '';
+			if ('delete' === $table->current_action()) {
+				$message = '<div class="updated below-h2" id="message"><p>' . sprintf(__('Items deleted: %d', 'custom_table_example'), count($_REQUEST['id'])) . '</p></div>';
+			}
+			?>
+			<div class="wrap">
+
+				<div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
+
+				<form id="select-group" method="GET">
+					<select name="group" id="group">
+						<option value='-1'>tous</option>
+						<?php 
+
+							$list_groups = VF_Users_List_Table::get_groups_list(); 
+							foreach ($list_groups as $key => $value) {
+
+									if($key == $group)
+										echo "<option selected='selected' value='$key'>$value</option>";
+									else
+										echo "<option value='$key'>$value</option>";
+							}
+						?>
+					</select>
+					<input name="doselect" type="submit" class="button action" value="selectionner">
+					<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+				</form>
+
+				<h2><?php _e('Persons', 'vf_users_list')?> 
+
+
+
+					<a class="add-new-h2" href="<?php echo get_admin_url(get_current_blog_id(), 'admin.php?page=persons_form');?>"><?php _e('Add new', 'vf_users_menu')?></a>
+				</h2>
+				<?php echo $message; ?>
+
+				<form id="persons-table" method="GET">
+					<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+					<?php $table->display() ?>
+				</form>
+
+			</div>									 
+		<?php									 
+		}		
+	}
+}
+
+//$vf2_users_list = new VF2_Users_List();
+
+
+
+
+		<!--
+			<div class="wrap">
+		
+				<div class="icon32 icon32-posts-post" id="icon-edit"><br></div>
+		
+				<form id="select-group" method="GET">
+					<select name="group" id="group">
+						<option value='-1'>tous</option>
+						<?php 
+		
+							$list_groups = VF_Users_List_Table::get_groups_list(); 
+							foreach ($list_groups as $key => $value) {
+		
+									if($key == $group)
+										echo "<option selected='selected' value='$key'>$value</option>";
+									else
+										echo "<option value='$key'>$value</option>";
+							}
+						?>
+					</select>
+					<input name="doselect" type="submit" class="button action" value="selectionner">
+					<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+				</form>
+		
+				<h2><?php _e('Persons', 'vf_users_list')?> 
+		
+		
+		
+					<a class="add-new-h2" href="<?php echo get_admin_url(get_current_blog_id(), 'admin.php?page=persons_form');?>"><?php _e('Add new', 'vf_users_menu')?></a>
+				</h2>
+				<?php echo $message; ?>
+		
+				<form id="persons-table" method="GET">
+					<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>"/>
+					<?php $table->display() ?>
+				</form>
+		
+		</div> 
+		-->			
