@@ -15,6 +15,8 @@ require_once(sprintf("%s/classes/tools.php"				, dirname(__FILE__)));
 require_once(sprintf("%s/classes/autologin.php"			, dirname(__FILE__)));
 
 
+// test de commit
+
 if(!class_exists('VF2_Users_List')){
 
 class VF2_Users_List{
