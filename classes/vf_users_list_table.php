@@ -88,7 +88,7 @@ class VF_Users_List_Table extends WP_List_Table {
 		return isset($item['login_hash']) 
 		? '<a class="submitdelete button action" href="admin.php?page=smc_users&paged='.$paged.'&order='.$order.'&orderby='.$orderby.'&group='.$group.'&action=delete_autologin&id='.$item['ID']
 		.'" onclick="return confirm(\''.addslashes(__('Are you sure you want to delete this Login URL ?','vf_users_list')).'\')">'.__('Delete','vf_users_list').'</a>&nbsp;&nbsp;' 
-		: '<a class="submitdelete button button-primary" href="admin.php?page=smc_users&paged='.$paged.'&order='.$order.'&orderby='.$orderby.'&group='.$group.'&action=create_autologin&id='.$item['ID']
+		: '<a class="submitdelete button button-primary" href="admin.php?page=smc_users&paged='.$paged.'&order='.$order.'&orderby='.$orderby.'&group='.$group.'&action=create_autologin&id='.$item['ID'].''
 		.'" onclick="return confirm(\''.addslashes(__('Are you sure you want to create this Login URL ?','vf_users_list')).'\')">'.__('Create','vf_users_list').'</a>&nbsp;&nbsp;';
 	}
 

@@ -71,7 +71,8 @@ if(!class_exists('VF_Auto_login'))
 				do_action('wp_login', $username);
 		
 				error_log("val triger login : OK !!!") ;
-				wp_redirect("http://www.example.com");
+				//wp_redirect("http://www.example.com");
+				wp_redirect("https://applications.groupe-credit-du-nord.com/les-rdv-smc/index.php/bienvenue/");
 				exit;
 			}
 		}
@@ -154,6 +155,8 @@ if(!class_exists('VF_Auto_login'))
 			public static function sendid($psendid){
 				global $wpdb;
 		
+		
+		
 				$sendid = (int) $this->val_sanitize_variables($psendid);
 				$_sended_on = current_time( 'mysql' );
 				$wpdb->query("UPDATE ".$wpdb->prefix."vf_auto_login SET `sended_on` = '".$_sended_on."' WHERE `uid` = ".$sendid);		
@@ -200,12 +203,21 @@ if(!class_exists('VF_Auto_login'))
 		
 			public static function send_autologin($userlogin){
 				global $wpdb;
+				require_once(sprintf("%s/../templates/autologin_email1.php", dirname(__FILE__)));
+				require_once(sprintf("%s/../templates/autologin_email2.php", dirname(__FILE__)));
+				require_once(sprintf("%s/../templates/autologin_email3.php", dirname(__FILE__)));
+
+
 				$table_autologin = $wpdb->prefix.'vf_auto_login';
+				$table_user = $wpdb->prefix.'users';
 				$uid = $wpdb->get_var( "SELECT uid FROM $table_autologin where username= '$userlogin'" );
+				
 				error_log("send uid : $uid");
 				if (!$uid) {
 					return 0 ;
 				} else {	
+					error_log("SQL : SELECT user_email FROM $table_user where ID=$uid");
+					$current_email = $wpdb->get_var( "SELECT user_email FROM $table_user where user_login='$userlogin'" );
 					$_sended_on = current_time( 'mysql' );
 					$wpdb->query("UPDATE ".$table_autologin." SET sended_on = '".$_sended_on."' WHERE uid = ".$uid);	
 		
@@ -213,15 +225,36 @@ if(!class_exists('VF_Auto_login'))
 					$siteurl = get_option('siteurl');
 					$login_url = $siteurl.'/?hash='.$login_hash;
 		
+					//global $current_user; 
+					//$current_user = wp_get_current_user();
+		
+					error_log("email : $current_email");
+					$to = $current_email; 
 		
 				/* sending the E-mail */
-				$to = 'vincent.ferrari@chezlesmonstres.net';
-				$subject = 'connexion au site';
+				//$to = 'vincent.ferrari@chezlesmonstres.net';
+				$subject = 'Connectez-vous au nouveau site mobile de la SMC';
 				$body = 'le corps du message';
 				$headers = array('Content-type: text/html; charsetUTF-8');
 		
 				$body .='<br /><a href="'.$login_url.'"> Votre autologin '.$login_url.' </a><br /><i><small>la SMC</small></i>';
-		
+				$body = $autologin_email1 ;
+				$body .='<a href="'.$login_url.'"> ICI </a>';
+				$body .= $autologin_email2 ;
+				$body .='<a href="'.$login_url.'">
+					<img width="76" height="76" src="https://applications.groupe-credit-du-nord.com/les-rdv-smc/wp-content/uploads/2015/05/Icone-site-mobile1.png"
+				border="0" alt="" class="image_fix" style="width:76px; height:76px;text-decoration: none;outline: 0;border: 0;display: block;-ms-interpolation-mode:
+				bicubic;" /></a>';
+
+				
+				$body .= $autologin_email3 ;
+				
+				
+			
+				$headers[] = 'From: SMC Communication <info@applications.groupe-credit-du-nord.com>';
+				$headers[] = 'Reply-To: SMC Communication <smc_communication@smc.fr>';
+				$headers[] = 'Content-type: text/html; charsetUTF-8';		
+
 				wp_mail($to,$subject,$body,$headers);
 					return 1;
 				}
@@ -232,6 +265,7 @@ if(!class_exists('VF_Auto_login'))
 			public static function create_autologin($userlogin){
 					global $wpdb;
 					$table_autologin = $wpdb->prefix.'vf_auto_login';
+					error_log("je rentre dans create autologin");
 					$exists = $wpdb->get_var( "SELECT COUNT(uid) FROM $table_autologin where username= '$userlogin'" );
 								if ($exists > 0) {
 						return 0 ;
